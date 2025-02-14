@@ -38,14 +38,8 @@
 - Java 17 이상 설치
 - MySQL 또는 H2 데이터베이스 설정
 
-### 2. 프로젝트 클론
-```bash
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
 
----
-
-### 프로젝트 구조
+### 2. 프로젝트 구조
 src
 ├── main
 │   ├── java
