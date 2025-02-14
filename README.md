@@ -42,3 +42,25 @@
 ```bash
 git clone https://github.com/your-username/your-repo.git
 cd your-repo
+
+---
+
+src
+├── main
+│   ├── java
+│   │   └── com
+│   │       └── example
+│   │           ├── config
+│   │           ├── controller
+│   │           ├── service
+│   │           ├── repository
+│   │           ├── entity
+│   │           └── exception
+│   └── resources
+│       └── application.yml
+└── test
+    └── java
+        └── com
+            └── example
+                ├── service
+                └── controller
