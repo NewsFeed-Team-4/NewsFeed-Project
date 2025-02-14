@@ -45,6 +45,7 @@ cd your-repo
 
 ---
 
+### 프로젝트 구조
 src
 ├── main
 │   ├── java
