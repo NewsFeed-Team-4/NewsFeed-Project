@@ -1,7 +1,10 @@
 package com.example.newsfeedproject.article.controller;
 
+import com.example.newsfeedproject.article.dto.ArticleResponseDto;
+import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +14,15 @@ import org.springframework.web.bind.annotation.*;
 public class ArticleController {
     private final ArticleService articleService;
     //게시글 CRUD
+
+    @PostMapping
+    public ResponseEntity<ArticleResponseDto> save(@RequestBody CreateArticleRequestDto requestDto) {
+
+        ArticleResponseDto articleResponseDto = articleService.save(requestDto.getTitle(), requestDto.getContent(), requestDto.getUserName(), requestDto.getEmail());
+
+        return new ResponseEntity<>(articleResponseDto, HttpStatus.CREATED);
+    }
+
     //게시글 좋아요
 
     //게시글 좋아요 등록

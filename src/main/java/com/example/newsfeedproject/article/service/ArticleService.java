@@ -1,6 +1,7 @@
 package com.example.newsfeedproject.article.service;
 
 
+import com.example.newsfeedproject.article.dto.ArticleResponseDto;
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.article.repository.ArticleRepository;
 import com.example.newsfeedproject.recommand.entity.RecommendArticle;
@@ -23,6 +24,23 @@ public class ArticleService {
     private final UserRepository userRepository;
 
     //게시글 CRUD
+
+    public ArticleResponseDto save(String title, String contents, String userName, String email) {
+        User findUser = userRepository.findByEmailOrElseThrow(email);
+
+        Article article = Article.builder()
+                .user(findUser)
+                .userName(userName)
+                .title(title)
+                .content(contents)
+                .email(email)
+                .build();
+
+        Article savedArticle = articleRepository.save(article);
+
+        return new ArticleResponseDto(savedArticle);
+    }
+
     //게시글 좋아요
     @Transactional
     public void addRecommendArticle(Long articleId, Long userId) {
