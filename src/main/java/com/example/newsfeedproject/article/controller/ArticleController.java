@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/articles")
@@ -21,6 +23,24 @@ public class ArticleController {
         ArticleResponseDto articleResponseDto = articleService.save(requestDto.getTitle(), requestDto.getContent(), requestDto.getUserName(), requestDto.getEmail());
 
         return new ResponseEntity<>(articleResponseDto, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ArticleResponseDto>> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        List<ArticleResponseDto> articleResponseDtoList = articleService.findAll(page, size);
+
+        return new ResponseEntity<>(articleResponseDtoList, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id, @SessionAttribute(name = "email") String email) {
+
+        articleService.delete(id, email);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     //게시글 좋아요

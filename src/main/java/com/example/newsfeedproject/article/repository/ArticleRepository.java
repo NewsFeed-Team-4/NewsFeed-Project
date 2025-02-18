@@ -9,4 +9,7 @@ import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
 
+    List<Article> findAllByEmail(String email);
+    Optional<Article> findByIdAndEmail(Long id, String email);
+
 }

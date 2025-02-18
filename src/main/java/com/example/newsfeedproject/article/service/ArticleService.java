@@ -9,11 +9,13 @@ import com.example.newsfeedproject.recommand.repository.RecommendArticleReposito
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +42,22 @@ public class ArticleService {
 
         return new ArticleResponseDto(savedArticle);
     }
+
+    public List<ArticleResponseDto> findAll(int page, int size) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        return articleRepository.findAll().stream().map(ArticleResponseDto::new).toList();
+
+    }
+
+    @Transactional
+    public void delete(Long id, String email) {
+        Article article = articleRepository.findByIdAndEmail(id, email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+
+        articleRepository.delete(article);
+    }
+
 
     //게시글 좋아요
     @Transactional
