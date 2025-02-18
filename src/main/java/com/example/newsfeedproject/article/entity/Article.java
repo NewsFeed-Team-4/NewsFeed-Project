@@ -42,6 +42,10 @@ public class Article extends BaseEntity {
         this.userName = userName;
     }
 
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 
     @Builder
     public Article(User user, String userName, String image, String title, String content, String email) {

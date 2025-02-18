@@ -4,11 +4,13 @@ import com.example.newsfeedproject.article.dto.ArticleResponseDto;
 import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.service.ArticleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,14 +28,22 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ArticleResponseDto>> findAll(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+    public ResponseEntity<Page<ArticleResponseDto>> findAll(
+            @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        List<ArticleResponseDto> articleResponseDtoList = articleService.findAll(page, size);
-
-        return new ResponseEntity<>(articleResponseDtoList, HttpStatus.OK);
+        Page<ArticleResponseDto> articleResponseDtoPage = articleService.findAll(pageable);
+        return new ResponseEntity<>(articleResponseDtoPage, HttpStatus.OK);
     }
+
+
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @SessionAttribute(name = "email") String email, @RequestBody CreateArticleRequestDto requestDto) {
+        ArticleResponseDto updatedArticle = articleService.update(id, email, requestDto);
+
+        return new ResponseEntity<>(updatedArticle, HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @SessionAttribute(name = "email") String email) {
