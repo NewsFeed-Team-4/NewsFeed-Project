@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/articles")
 public class ArticleController {
     private final ArticleService articleService;
-    //게시글 CRUD
 
+    //==================== 게시글 CRUD API ====================//
+
+    // 새로운 게시글을 생성
     @PostMapping
     public ResponseEntity<ArticleResponseDto> save(@RequestBody CreateArticleRequestDto requestDto) {
 
@@ -27,6 +29,7 @@ public class ArticleController {
         return new ResponseEntity<>(articleResponseDto, HttpStatus.CREATED);
     }
 
+    // 게시글 목록을 페이징하여 조회
     @GetMapping
     public ResponseEntity<Page<ArticleResponseDto>> findAll(
             @PageableDefault(size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -36,7 +39,7 @@ public class ArticleController {
     }
 
 
-
+    // 특정 게시글을 수정
     @PatchMapping("/{id}")
     public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @SessionAttribute(name = "email") String email, @RequestBody CreateArticleRequestDto requestDto) {
         ArticleResponseDto updatedArticle = articleService.update(id, email, requestDto);
@@ -44,7 +47,7 @@ public class ArticleController {
         return new ResponseEntity<>(updatedArticle, HttpStatus.OK);
     }
 
-
+    // 특정 게시글을 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, @SessionAttribute(name = "email") String email) {
 
@@ -53,7 +56,7 @@ public class ArticleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //게시글 좋아요
+    //===================== 게시글 좋아요 관련 API ==========================//
 
     //게시글 좋아요 등록
     @PostMapping("/{articleId}/favorite")

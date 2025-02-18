@@ -24,11 +24,14 @@ public class ArticleService {
     private final RecommendArticleRepository recommendArticleRepository;
     private final UserRepository userRepository;
 
-    //게시글 CRUD
+    //=============== 게시글 CRUD 기능 ===============//
 
     public ArticleResponseDto save(String title, String contents, String userName, String email) {
+
+        // 이메일로 사용자 조회
         User findUser = userRepository.findByEmailOrElseThrow(email);
 
+        // 게시글 엔티티 생성
         Article article = Article.builder()
                 .user(findUser)
                 .userName(userName)
@@ -42,12 +45,14 @@ public class ArticleService {
         return new ArticleResponseDto(savedArticle);
     }
 
+    // 모든 게시글을 페이징하여 조회
     public Page<ArticleResponseDto> findAll(Pageable pageable) {
         return articleRepository.findAll(pageable)
                 .map(ArticleResponseDto::new);
     }
 
 
+    // 게시글 수정
     @Transactional
     public ArticleResponseDto update(Long id, String email, CreateArticleRequestDto requestDto) {
         Article article = articleRepository.findByIdAndEmail(id, email)
@@ -58,6 +63,7 @@ public class ArticleService {
         return new ArticleResponseDto(article);
     }
 
+    // 게시글 삭제
     @Transactional
     public void delete(Long id, String email) {
         Article article = articleRepository.findByIdAndEmail(id, email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
@@ -66,7 +72,8 @@ public class ArticleService {
     }
 
 
-    //게시글 좋아요
+    //================== 게시글 추천 관련 기능 ===================//
+
     @Transactional
     public void addRecommendArticle(Long articleId, Long userId) {
         //좋아요한 게시글과 사용자가 존재하는지 검증
