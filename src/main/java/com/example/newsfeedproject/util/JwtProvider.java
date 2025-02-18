@@ -28,6 +28,7 @@ public class JwtProvider {
     public String generateToken(Payload payload) {
         Map<String, Object> claims = new HashMap<>();
 
+        claims.put("id", payload.getId());
         claims.put("email", payload.getEmail());
         claims.put("username", payload.getUsername());
 
