@@ -50,10 +50,13 @@ public class User extends BaseEntity {
         this.imageUrl = imageUrl;
     }
 
-    public void updateUser(String username, String newPassword, String description, String imageUrl) {
+    public void updateUserInfo(String username, String description, String imageUrl) {
         this.username = username != null ? username : this.username;
-        this.password = newPassword != null ? newPassword : this.password;
         this.description = description != null ? description : this.description;
         this.imageUrl = imageUrl != null ? imageUrl : this.imageUrl;
+    }
+
+    public void updateUserPassword(String newPassword) {
+        this.password = newPassword;
     }
 }

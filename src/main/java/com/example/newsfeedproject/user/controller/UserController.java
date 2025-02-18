@@ -2,7 +2,8 @@ package com.example.newsfeedproject.user.controller;
 
 import com.example.newsfeedproject.user.dto.request.CreateUserRequestDto;
 import com.example.newsfeedproject.user.dto.request.DeleteUserRequestDto;
-import com.example.newsfeedproject.user.dto.request.UpdateUserRequestDto;
+import com.example.newsfeedproject.user.dto.request.UpdateUserInfoRequestDto;
+import com.example.newsfeedproject.user.dto.request.UpdateUserPasswordRequestDto;
 import com.example.newsfeedproject.user.dto.response.CreateUserResponseDto;
 import com.example.newsfeedproject.user.dto.response.GetUserResponseDto;
 import com.example.newsfeedproject.user.service.UserService;
@@ -28,15 +29,24 @@ public class UserController {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
-    @PatchMapping("/user")
-    public ResponseEntity<Void> updateUser(@RequestBody UpdateUserRequestDto dto) {
-        userService.updateUser(
+    @PatchMapping("/user/info")
+    public ResponseEntity<Void> updateUserInfo(@RequestBody UpdateUserInfoRequestDto dto) {
+        userService.updateUserInfo(
                 dto.getEmail(),
                 dto.getUsername(),
-                dto.getOldPassword(),
-                dto.getNewPassword(),
+                dto.getPassword(),
                 dto.getDescription(),
                 dto.getImageUrl()
+        );
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/user/password")
+    public ResponseEntity<Void> updateUserPassword(@RequestBody UpdateUserPasswordRequestDto dto) {
+        userService.updateUserPassword(
+                dto.getEmail(),
+                dto.getOldPassword(),
+                dto.getNewPassword()
         );
         return ResponseEntity.noContent().build();
     }

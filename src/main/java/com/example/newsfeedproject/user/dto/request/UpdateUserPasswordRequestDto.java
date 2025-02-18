@@ -5,11 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UpdateUserRequestDto {
+public class UpdateUserPasswordRequestDto {
     private String email;
-    private String username;
     private String oldPassword;
     private String newPassword;
-    private String description;
-    private String imageUrl;
 }

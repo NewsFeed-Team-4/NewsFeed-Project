@@ -86,10 +86,17 @@ public class UserService {
         return new GetUserResponseDto(savedUser);
     }
 
-    public void updateUser(String email, String username, String oldPassword, String newPassword, String description, String imageUrl) {
+    public void updateUserInfo(String email, String username, String password, String description, String imageUrl) {
+        User verified = verifyUserOrElseThrow(email, password);
+
+        verified.updateUserInfo(username, description, imageUrl);
+        userRepository.save(verified);
+    }
+
+    public void updateUserPassword(String email, String oldPassword, String newPassword) {
         User verified = verifyUserOrElseThrow(email, oldPassword);
 
-        verified.updateUser(username, newPassword, description, imageUrl);
+        verified.updateUserPassword(newPassword);
         userRepository.save(verified);
     }
 }
