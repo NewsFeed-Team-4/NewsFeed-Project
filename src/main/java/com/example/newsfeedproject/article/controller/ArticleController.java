@@ -3,6 +3,8 @@ package com.example.newsfeedproject.article.controller;
 import com.example.newsfeedproject.article.dto.ArticleResponseDto;
 import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.service.ArticleService;
+import com.example.newsfeedproject.common.annotations.UserAuth;
+import com.example.newsfeedproject.common.annotations.UserAuthDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -41,17 +43,17 @@ public class ArticleController {
 
     // 특정 게시글을 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @SessionAttribute(name = "email") String email, @RequestBody CreateArticleRequestDto requestDto) {
-        ArticleResponseDto updatedArticle = articleService.update(id, email, requestDto);
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @UserAuth UserAuthDto userAuthDto, @RequestBody CreateArticleRequestDto requestDto) {
+        ArticleResponseDto updatedArticle = articleService.update(id, userAuthDto.getEmail(), requestDto);
 
         return new ResponseEntity<>(updatedArticle, HttpStatus.OK);
     }
 
     // 특정 게시글을 삭제
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id, @SessionAttribute(name = "email") String email) {
+    public ResponseEntity<Void> delete(@PathVariable Long id, @UserAuth UserAuthDto userAuthDto) {
 
-        articleService.delete(id, email);
+        articleService.delete(id, userAuthDto.getEmail());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -5,6 +5,8 @@ import com.example.newsfeedproject.article.dto.ArticleResponseDto;
 import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.article.repository.ArticleRepository;
+import com.example.newsfeedproject.common.annotations.UserAuth;
+import com.example.newsfeedproject.common.annotations.UserAuthDto;
 import com.example.newsfeedproject.recommand.entity.RecommendArticle;
 import com.example.newsfeedproject.recommand.repository.RecommendArticleRepository;
 import com.example.newsfeedproject.user.entity.User;
@@ -26,18 +28,18 @@ public class ArticleService {
 
     //=============== 게시글 CRUD 기능 ===============//
 
-    public ArticleResponseDto save(String title, String contents, String userName, String email) {
+    public ArticleResponseDto save(String title, String contents, UserAuthDto userAuthDto) {
 
         // 이메일로 사용자 조회
-        User findUser = userRepository.findByEmailOrElseThrow(email);
+        User findUser = userRepository.findByEmailOrElseThrow(userAuthDto.getEmail());
 
         // 게시글 엔티티 생성
         Article article = Article.builder()
                 .user(findUser)
-                .userName(userName)
+                .userName(userAuthDto.getUserName())
                 .title(title)
                 .content(contents)
-                .email(email)
+                .email(userAuthDto.getEmail())
                 .build();
 
         Article savedArticle = articleRepository.save(article);
