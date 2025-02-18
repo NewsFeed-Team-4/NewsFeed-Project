@@ -2,7 +2,9 @@ package com.example.newsfeedproject.user.dto.response;
 
 
 import com.example.newsfeedproject.user.entity.User;
+import lombok.Getter;
 
+@Getter
 public class UserResponseDto {
     private final String name;
     private final String email;
