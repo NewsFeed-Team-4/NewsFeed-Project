@@ -9,11 +9,11 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class UserListResponse {
-    private final List<UserResponseDto> data;
+    private final List<GetUserResponseDto> data;
 
     public static UserListResponse from(List<User> users) {
-        List<UserResponseDto> userList = users.stream()
-                .map(UserResponseDto::new)
+        List<GetUserResponseDto> userList = users.stream()
+                .map(GetUserResponseDto::new)
                 .toList();
         return new UserListResponse(userList);
     }
