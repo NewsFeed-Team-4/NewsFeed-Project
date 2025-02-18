@@ -1,13 +1,16 @@
 package com.example.newsfeedproject.user.service;
 
 import com.example.newsfeedproject.user.dto.response.CreateUserResponseDto;
+import com.example.newsfeedproject.user.dto.response.UserListResponse;
 import com.example.newsfeedproject.user.dto.response.GetUserResponseDto;
 import com.example.newsfeedproject.user.entity.DeletedUser;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.user.repository.DeletedUserRepository;
 import com.example.newsfeedproject.user.repository.UserRepository;
+import com.example.newsfeedproject.user.repository.spec.UserSpecification;
 import com.example.newsfeedproject.util.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,7 +75,8 @@ public class UserService {
         return savedUser;
     }
 
-    public List<GetUserResponseDto> findAllUser() {
-        return null;
+    public UserListResponse findAllUser(String userName) {
+        Specification<User> spec = Specification.where(UserSpecification.hasUsername(userName));
+        return UserListResponse.from(userRepository.findAll(spec));
     }
 }

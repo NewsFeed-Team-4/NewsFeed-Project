@@ -4,8 +4,8 @@ import com.example.newsfeedproject.user.dto.request.CreateUserRequestDto;
 import com.example.newsfeedproject.user.dto.request.DeleteUserRequestDto;
 import com.example.newsfeedproject.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeedproject.user.dto.response.CreateUserResponseDto;
-import com.example.newsfeedproject.user.dto.response.GetUserResponseDto;
 import com.example.newsfeedproject.user.service.UserService;
+import com.example.newsfeedproject.user.dto.response.UserListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +19,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/user")
-    public ResponseEntity<List<GetUserResponseDto>> findAllUser() {
-        return ResponseEntity.ok(userService.findAllUser());
+    public ResponseEntity<UserListResponse> findAllUser(@RequestParam(required = false) String userName) {
+        UserListResponse users = userService.findAllUser(userName);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/user/{id}")
