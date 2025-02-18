@@ -26,7 +26,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final DeletedUserRepository deletedUserRepository;
 
-    public CreateUserResponseDto saveUser(String email, String password, String username) {
+    public CreateUserResponseDto saveUser(String email, String password, String username, String description, String imageUrl) {
 
         // email 중복 확인
         if (userRepository.findByEmail(email).isPresent()) {
@@ -43,6 +43,8 @@ public class UserService {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .username(username)
+                .description(description)
+                .imageUrl(imageUrl)
                 .build();
 
         // user entity 저장
@@ -78,5 +80,18 @@ public class UserService {
     public UserListResponse findAllUser(String userName) {
         Specification<User> spec = Specification.where(UserSpecification.hasUsername(userName));
         return UserListResponse.from(userRepository.findAll(spec));
+    }
+
+    public GetUserResponseDto findUserById(Long id) {
+        User savedUser = userRepository.findByIdOrElseThrow(id);
+
+        return new GetUserResponseDto(savedUser);
+    }
+
+    public void updateUser(String email, String username, String oldPassword, String newPassword, String description, String imageUrl) {
+        User verified = verifyUserOrElseThrow(email, oldPassword);
+
+        verified.updateUser(username, newPassword, description, imageUrl);
+        userRepository.save(verified);
     }
 }

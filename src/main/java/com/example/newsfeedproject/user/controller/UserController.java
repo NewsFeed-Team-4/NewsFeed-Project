@@ -4,6 +4,7 @@ import com.example.newsfeedproject.user.dto.request.CreateUserRequestDto;
 import com.example.newsfeedproject.user.dto.request.DeleteUserRequestDto;
 import com.example.newsfeedproject.user.dto.request.UpdateUserRequestDto;
 import com.example.newsfeedproject.user.dto.response.CreateUserResponseDto;
+import com.example.newsfeedproject.user.dto.response.GetUserResponseDto;
 import com.example.newsfeedproject.user.service.UserService;
 import com.example.newsfeedproject.user.dto.response.UserListResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,18 +26,32 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<?> findUserById(@PathVariable Long id) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<GetUserResponseDto> findUserById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findUserById(id));
     }
 
     @PatchMapping("/user")
-    public ResponseEntity<?> updateUser(@RequestBody UpdateUserRequestDto dto) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> updateUser(@RequestBody UpdateUserRequestDto dto) {
+        userService.updateUser(
+                dto.getEmail(),
+                dto.getUsername(),
+                dto.getOldPassword(),
+                dto.getNewPassword(),
+                dto.getDescription(),
+                dto.getImageUrl()
+        );
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/user/signup")
     public ResponseEntity<CreateUserResponseDto> saveUser(@RequestBody CreateUserRequestDto dto) {
-        return ResponseEntity.ok(userService.saveUser(dto.getEmail(), dto.getPassword(), dto.getUsername()));
+        return ResponseEntity.ok(userService.saveUser(
+                dto.getEmail(),
+                dto.getPassword(),
+                dto.getUsername(),
+                dto.getDescription(),
+                dto.getImageUrl())
+        );
     }
 
     @DeleteMapping("/user")
