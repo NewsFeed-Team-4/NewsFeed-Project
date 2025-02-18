@@ -18,4 +18,6 @@ public class CreateUserRequestDto {
     private String email;
     private String password;
     private String username;
+    private String description;
+    private String imageUrl;
 }

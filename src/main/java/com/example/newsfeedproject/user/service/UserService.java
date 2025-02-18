@@ -16,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -26,7 +24,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final DeletedUserRepository deletedUserRepository;
 
-    public CreateUserResponseDto saveUser(String email, String password, String username) {
+    public CreateUserResponseDto saveUser(String email, String password, String username, String description, String imageUrl) {
 
         // email 중복 확인
         if (userRepository.findByEmail(email).isPresent()) {
@@ -43,6 +41,8 @@ public class UserService {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .username(username)
+                .description(description)
+                .imageUrl(imageUrl)
                 .build();
 
         // user entity 저장
@@ -78,5 +78,25 @@ public class UserService {
     public UserListResponse findAllUser(String userName) {
         Specification<User> spec = Specification.where(UserSpecification.hasUsername(userName));
         return UserListResponse.from(userRepository.findAll(spec));
+    }
+
+    public GetUserResponseDto findUserById(Long id) {
+        User savedUser = userRepository.findByIdOrElseThrow(id);
+
+        return new GetUserResponseDto(savedUser);
+    }
+
+    public void updateUserInfo(String email, String username, String password, String description, String imageUrl) {
+        User verified = verifyUserOrElseThrow(email, password);
+
+        verified.updateUserInfo(username, description, imageUrl);
+        userRepository.save(verified);
+    }
+
+    public void updateUserPassword(String email, String oldPassword, String newPassword) {
+        User verified = verifyUserOrElseThrow(email, oldPassword);
+
+        verified.updateUserPassword(newPassword);
+        userRepository.save(verified);
     }
 }
