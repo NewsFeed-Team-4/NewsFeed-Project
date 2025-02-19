@@ -12,6 +12,7 @@ public enum ErrorCode {
     UNAUTHORIZED_ACCESS("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
     DUPLICATE_EMAIL("이미 사용 중인 이메일입니다.", HttpStatus.BAD_REQUEST),
     METHOD_ARGUMENT_NOT_VALID("입력값이 올바르지 않습니다", HttpStatus.BAD_REQUEST),
+    COMMENT_NOT_FOUND("존재하지 않는 댓글 입니다", HttpStatus.NOT_FOUND),
 
     //게시글 추천
     SELF_RECOMMEND_NOT_ALLOWED("본인이 작성한 게시물에는 좋아요를 남길 수 없습니다.", HttpStatus.BAD_REQUEST), // 🔹 추가
