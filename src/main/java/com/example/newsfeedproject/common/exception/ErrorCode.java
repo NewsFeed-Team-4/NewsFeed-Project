@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
     USER_NOT_FOUND("존재하지 않는 사용자 입니다.", HttpStatus.BAD_REQUEST),
+    USER_ALREADY_EXIST("이미 존재하는 사용자 입니다.", HttpStatus.BAD_REQUEST),
     ARTICLE_NOT_FOUND("존재하지 않는 게시글 입니다.", HttpStatus.NOT_FOUND),
     INVALID_PASSWORD("잘못된 비밀번호입니다.", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED_ACCESS("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED),
