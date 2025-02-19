@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comments")
+@RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService commentService;
@@ -34,7 +34,7 @@ public class CommentController {
     // 댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto) {
-        CommentResponseDto responseDto = commentService.updateComment(commentId, requestDto);
+        CommentResponseDto responseDto = commentService.updateComment(commentId, requestDto, null);
         return ResponseEntity.ok(responseDto);
     }
 
