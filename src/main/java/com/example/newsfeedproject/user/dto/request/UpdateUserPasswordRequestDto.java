@@ -14,8 +14,10 @@ public class UpdateUserPasswordRequestDto {
     private String email;
 
     @NotBlank(message = "기존 비밀번호를 입력 해주세요.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[\\W_]).+$", message = "대소문자 포함 영문 + 숫자 + 특수문자를 최소 1글자씩 포함합니다.")
     private String oldPassword;
 
     @NotBlank(message = "새로운 비밀번호를 입력 해주세요.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[\\W_]).+$", message = "대소문자 포함 영문 + 숫자 + 특수문자를 최소 1글자씩 포함합니다.")
     private String newPassword;
 }
