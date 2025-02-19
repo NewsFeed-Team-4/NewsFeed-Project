@@ -58,7 +58,7 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto) {
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, Long userId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found")); // 댓글 없음 예외
 
