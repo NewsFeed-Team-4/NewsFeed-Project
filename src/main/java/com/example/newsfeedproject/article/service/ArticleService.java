@@ -52,11 +52,6 @@ public class ArticleService {
                 .map(ArticleResponseDto::new);
     }
 
-    // 게시글 조회 메서드
-    private Article findArticleById(Long id) {
-        return articleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
-    }
-
     // 권한 검증 메서드
     private void validateArticleAuthor (Article article, String email) {
         if (!article.getEmail().equals(email)) {
@@ -70,7 +65,7 @@ public class ArticleService {
     public ArticleResponseDto update(Long id, String email, CreateArticleRequestDto requestDto) {
 
         // 게시글 존재 여부 확인
-        Article article = findArticleById(id);
+        Article article = articleRepository.findByIdOrElseThrow(id);
 
         // 수정 권한 확인
         validateArticleAuthor(article, email);
@@ -86,7 +81,7 @@ public class ArticleService {
     public void delete(Long id, String email) {
 
         // 게시글 존재 여부 확인
-        Article article = findArticleById(id);
+        Article article = articleRepository.findByIdOrElseThrow(id);
 
         // 삭제 권한 확인
         validateArticleAuthor(article, email);
