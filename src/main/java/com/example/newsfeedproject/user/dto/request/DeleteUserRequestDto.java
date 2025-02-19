@@ -14,5 +14,6 @@ public class DeleteUserRequestDto {
     private final String email;
 
     @NotBlank(message = "비밀번호를 입력 해주세요.")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[\\W_]).+$", message = "대소문자 포함 영문 + 숫자 + 특수문자를 최소 1글자씩 포함합니다.")
     private final String password;
 }
