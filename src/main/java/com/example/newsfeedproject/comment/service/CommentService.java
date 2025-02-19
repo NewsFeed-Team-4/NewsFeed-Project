@@ -1,6 +1,10 @@
 package com.example.newsfeedproject.comment.service;
 
+import com.example.newsfeedproject.article.repository.ArticleRepository;
 import com.example.newsfeedproject.comment.entity.Comment;
+import com.example.newsfeedproject.comment.exception.UnauthorizedUserException;
+import com.example.newsfeedproject.common.exception.ApplicationException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.user.entity.User;
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.comment.dto.CommentRequestDto;
@@ -60,11 +64,11 @@ public class CommentService {
     @Transactional
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, Long userId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException("Comment not found")); // 댓글 없음 예외
+                .orElseThrow(() -> new ApplicationException(ErrorCode.COMMENT_NOT_FOUND)); // 댓글 없음 예외
 
         // 댓글 작성자와 수정 요청자가 같은지 확인
         if (!comment.getUser().getId().equals(userId)) {
-            throw new UnauthorizedUserException("You are not authorized to update this comment"); // 권한 없음 예외
+            throw new UnauthorizedUserException(); // 권한 없음 예외
         }
 
         comment.updateContent(requestDto.getContent());
