@@ -2,6 +2,8 @@ package com.example.newsfeedproject.user.entity;
 
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.common.entity.BaseEntity;
+import com.example.newsfeedproject.common.exception.ApplicationException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.friend.entity.UserFriend;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -29,10 +31,10 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
-    @Column(nullable = false)
+    @Column
     private String imageUrl;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -54,6 +56,9 @@ public class User extends BaseEntity {
     }
 
     public void updateUserPassword(String newPassword) {
+        if (this.password.equals(newPassword)) {
+            throw new ApplicationException(ErrorCode.PASSWORD_SAME_AS_OLD);
+        }
         this.password = newPassword;
     }
 }

@@ -8,6 +8,7 @@ import com.example.newsfeedproject.user.dto.response.CreateUserResponseDto;
 import com.example.newsfeedproject.user.dto.response.GetUserResponseDto;
 import com.example.newsfeedproject.user.service.UserService;
 import com.example.newsfeedproject.user.dto.response.UserListResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class UserController {
     }
 
     @PatchMapping("/user/info")
-    public ResponseEntity<Void> updateUserInfo(@RequestBody UpdateUserInfoRequestDto dto) {
+    public ResponseEntity<Void> updateUserInfo(@Valid @RequestBody UpdateUserInfoRequestDto dto) {
         userService.updateUserInfo(
                 dto.getEmail(),
                 dto.getUsername(),
@@ -42,7 +43,7 @@ public class UserController {
     }
 
     @PatchMapping("/user/password")
-    public ResponseEntity<Void> updateUserPassword(@RequestBody UpdateUserPasswordRequestDto dto) {
+    public ResponseEntity<Void> updateUserPassword(@Valid @RequestBody UpdateUserPasswordRequestDto dto) {
         userService.updateUserPassword(
                 dto.getEmail(),
                 dto.getOldPassword(),
@@ -52,7 +53,7 @@ public class UserController {
     }
 
     @PostMapping("/user/signup")
-    public ResponseEntity<CreateUserResponseDto> saveUser(@RequestBody CreateUserRequestDto dto) {
+    public ResponseEntity<CreateUserResponseDto> saveUser(@Valid @RequestBody CreateUserRequestDto dto) {
         return ResponseEntity.ok(userService.saveUser(
                 dto.getEmail(),
                 dto.getPassword(),
@@ -63,7 +64,7 @@ public class UserController {
     }
 
     @DeleteMapping("/user")
-    public ResponseEntity<Void> deleteUser(@RequestBody DeleteUserRequestDto dto) {
+    public ResponseEntity<Void> deleteUser(@Valid @RequestBody DeleteUserRequestDto dto) {
         userService.deleteUser(dto.getEmail(), dto.getPassword());
         return ResponseEntity.noContent().build();
     }
