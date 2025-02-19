@@ -89,7 +89,7 @@ public class UserService {
                 .imageUrl(savedUser.getImageUrl())
                 .articleList(GetUserResponseDto.UserArticle.ofList(savedUser.getArticles()))
                 .articleCount(savedUser.getArticles().size())
-                .friendsCount(null) // 튜터님 상담 후 결정
+                .friendCount(savedUser.getFriendCount())
                 .build();
     }
 

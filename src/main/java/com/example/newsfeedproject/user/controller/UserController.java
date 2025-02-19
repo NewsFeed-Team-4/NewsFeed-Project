@@ -14,23 +14,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/user")
+    @GetMapping
     public ResponseEntity<UserListResponse> findAllUser(@RequestParam(required = false) String userName) {
         UserListResponse users = userService.findAllUser(userName);
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<GetUserResponseDto> findUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findUserById(id));
     }
 
-    @PatchMapping("/user/info")
+    @PatchMapping("/info")
     public ResponseEntity<Void> updateUserInfo(@Valid @RequestBody UpdateUserInfoRequestDto dto) {
         userService.updateUserInfo(
                 dto.getEmail(),
@@ -42,7 +43,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/user/password")
+    @PatchMapping("/password")
     public ResponseEntity<Void> updateUserPassword(@Valid @RequestBody UpdateUserPasswordRequestDto dto) {
         userService.updateUserPassword(
                 dto.getEmail(),
@@ -52,7 +53,7 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/user/signup")
+    @PostMapping("/signup")
     public ResponseEntity<CreateUserResponseDto> saveUser(@Valid @RequestBody CreateUserRequestDto dto) {
         return ResponseEntity.ok(userService.saveUser(
                 dto.getEmail(),
@@ -63,7 +64,7 @@ public class UserController {
         );
     }
 
-    @DeleteMapping("/user")
+    @DeleteMapping
     public ResponseEntity<Void> deleteUser(@Valid @RequestBody DeleteUserRequestDto dto) {
         userService.deleteUser(dto.getEmail(), dto.getPassword());
         return ResponseEntity.noContent().build();
