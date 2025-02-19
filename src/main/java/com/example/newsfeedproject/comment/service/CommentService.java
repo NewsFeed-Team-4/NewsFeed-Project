@@ -26,10 +26,13 @@ public class CommentService {
     // 댓글 생성
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserId())
+        // 사용자 없음 예외처리
+        User user = userRepository.findById(requestDto.getParentId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        //  게시글 없음 예외 처리
         Article article = articleRepository.findById(requestDto.getArticleId())
                 .orElseThrow(() -> new IllegalArgumentException("Article not found"));
+        //  메인  댓글  없음 예외처리
         Comment parent = requestDto.getParentId() != null ?
                 commentRepository.findById(requestDto.getParentId()).orElse(null) : null;
 
@@ -56,9 +59,15 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto) {
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, Long userId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+                .orElseThrow(() -> new CommentNotFoundException("Comment not found")); // 댓글 없음 예외
+
+        // 댓글 작성자와 수정 요청자가 같은지 확인
+        if (!comment.getUser().getId().equals(userId)) {
+            throw new UnauthorizedUserException("You are not authorized to update this comment"); // 권한 없음 예외
+        }
+
         comment.updateContent(requestDto.getContent());
         return new CommentResponseDto(comment);
     }

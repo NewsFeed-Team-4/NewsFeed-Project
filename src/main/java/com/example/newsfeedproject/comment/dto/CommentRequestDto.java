@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class CommentRequestDto {
-    private Long parentId; // 대댓글인 경우 부모 댓글 ID
+    private Long parentId; // 대댓글인 경우 작성자 댓글 ID
     private Long articleId; // 댓글이 달린 게시글 ID
     private String content; // 댓글 내용
 
@@ -16,4 +16,5 @@ public class CommentRequestDto {
         this.articleId = articleId;
         this.content = content;
     }
+
 }
