@@ -150,4 +150,27 @@ public class FriendService {
                 friendRequest.getModifiedAt()
         );
     }
+
+    @Transactional
+    public void deleteFriend(long userId, long friendId) {
+
+        FriendRequest friendRequest = friendRequestRepository.findByUserAndFriendBothDirections(userId, friendId, FriendRequestType.ACCEPTED)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend request not found"));
+
+        // DELETE 로 변경
+        friendRequest.setStatus(FriendRequestType.DELETED);
+        friendRequestRepository.save(friendRequest);
+
+        // 친구 관계가 존재하는지 확인 (양방향 체크)
+        boolean exists = userFriendRepository.existsByUserIdAndFriendId(userId, friendId);
+        boolean existsReverse = userFriendRepository.existsByUserIdAndFriendId(friendId, userId);
+
+        if (!exists || !existsReverse) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Friend relationship not found.");
+        }
+
+        // 친구 관계 삭제 (양방향)
+        userFriendRepository.deleteByUserIdAndFriendId(userId, friendId);
+        userFriendRepository.deleteByUserIdAndFriendId(friendId, userId);
+    }
 }
