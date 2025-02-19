@@ -24,9 +24,9 @@ public class ArticleController {
 
     // 새로운 게시글을 생성
     @PostMapping
-    public ResponseEntity<ArticleResponseDto> save(@RequestBody CreateArticleRequestDto requestDto) {
+    public ResponseEntity<ArticleResponseDto> save(@RequestBody CreateArticleRequestDto requestDto, @UserAuth UserAuthDto userAuthDto) {
 
-        ArticleResponseDto articleResponseDto = articleService.save(requestDto.getTitle(), requestDto.getContent(), requestDto.getUserName(), requestDto.getEmail());
+        ArticleResponseDto articleResponseDto = articleService.save(requestDto.getTitle(), requestDto.getContent(), userAuthDto);
 
         return new ResponseEntity<>(articleResponseDto, HttpStatus.CREATED);
     }

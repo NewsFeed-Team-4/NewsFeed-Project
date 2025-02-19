@@ -5,7 +5,6 @@ import com.example.newsfeedproject.article.dto.ArticleResponseDto;
 import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.article.repository.ArticleRepository;
-import com.example.newsfeedproject.common.annotations.UserAuth;
 import com.example.newsfeedproject.common.annotations.UserAuthDto;
 import com.example.newsfeedproject.recommand.entity.RecommendArticle;
 import com.example.newsfeedproject.recommand.repository.RecommendArticleRepository;
@@ -53,13 +52,30 @@ public class ArticleService {
                 .map(ArticleResponseDto::new);
     }
 
+    // 게시글 조회 메서드
+    private Article findArticleById(Long id) {
+        return articleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+    }
 
-    // 게시글 수정
+    // 권한 검증 메서드
+    private void validateArticleAuthor (Article article, String email) {
+        if (!article.getEmail().equals(email)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시글의 수정 권한이 없습니다.");
+        }
+
+    }
+
+    // 게시글 수정 메서드
     @Transactional
     public ArticleResponseDto update(Long id, String email, CreateArticleRequestDto requestDto) {
-        Article article = articleRepository.findByIdAndEmail(id, email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
 
+        // 게시글 존재 여부 확인
+        Article article = findArticleById(id);
+
+        // 수정 권한 확인
+        validateArticleAuthor(article, email);
+
+        // 게시글 수정
         article.update(requestDto.getTitle(), requestDto.getContent());
 
         return new ArticleResponseDto(article);
@@ -68,8 +84,14 @@ public class ArticleService {
     // 게시글 삭제
     @Transactional
     public void delete(Long id, String email) {
-        Article article = articleRepository.findByIdAndEmail(id, email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
 
+        // 게시글 존재 여부 확인
+        Article article = findArticleById(id);
+
+        // 삭제 권한 확인
+        validateArticleAuthor(article, email);
+
+        // 게시글 삭제
         articleRepository.delete(article);
     }
 
