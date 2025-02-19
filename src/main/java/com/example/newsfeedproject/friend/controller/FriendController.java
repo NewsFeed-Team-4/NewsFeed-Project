@@ -20,9 +20,9 @@ public class FriendController {
         return ResponseEntity.ok(friendService.requestFriends(userId));
     }
 
-    @PostMapping("/{usersId}/friend-requests/{email}")
-    public ResponseEntity<FriendResponseDto> requestFriend(@PathVariable Long usersId, @PathVariable String email) {
-        return ResponseEntity.ok(friendService.save(usersId, email));
+    @PostMapping("/{usersId}/friend-requests/{friendId}")
+    public ResponseEntity<FriendResponseDto> requestFriend(@PathVariable Long usersId, @PathVariable Long friendId) {
+        return ResponseEntity.ok(friendService.save(usersId, friendId));
     }
 
     @PostMapping("/{userId}/friends/{friendId}")
