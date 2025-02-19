@@ -6,6 +6,8 @@ import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.article.repository.ArticleRepository;
 import com.example.newsfeedproject.common.annotations.UserAuthDto;
+import com.example.newsfeedproject.common.exception.ApplicationException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.recommand.entity.RecommendArticle;
 import com.example.newsfeedproject.recommand.repository.RecommendArticleRepository;
 import com.example.newsfeedproject.user.entity.User;
@@ -13,10 +15,8 @@ import com.example.newsfeedproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -52,15 +52,10 @@ public class ArticleService {
                 .map(ArticleResponseDto::new);
     }
 
-    // 게시글 조회 메서드
-    private Article findArticleById(Long id) {
-        return articleRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
-    }
-
     // 권한 검증 메서드
     private void validateArticleAuthor (Article article, String email) {
         if (!article.getEmail().equals(email)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시글의 수정 권한이 없습니다.");
+            throw new ApplicationException(ErrorCode.UNAUTHORIZED_ARTICLE_MODIFICATION);
         }
 
     }
@@ -70,7 +65,7 @@ public class ArticleService {
     public ArticleResponseDto update(Long id, String email, CreateArticleRequestDto requestDto) {
 
         // 게시글 존재 여부 확인
-        Article article = findArticleById(id);
+        Article article = articleRepository.findByIdOrElseThrow(id);
 
         // 수정 권한 확인
         validateArticleAuthor(article, email);
@@ -86,7 +81,7 @@ public class ArticleService {
     public void delete(Long id, String email) {
 
         // 게시글 존재 여부 확인
-        Article article = findArticleById(id);
+        Article article = articleRepository.findByIdOrElseThrow(id);
 
         // 삭제 권한 확인
         validateArticleAuthor(article, email);
@@ -103,13 +98,13 @@ public class ArticleService {
         //좋아요한 게시글과 사용자가 존재하는지 검증
         Article article = articleRepository.findByIdOrElseThrow(articleId);
         if(article.getUser().getId().equals(userId)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인이 작성한 게시물에는 좋아요를 남길 수 없습니다.");
+            throw new ApplicationException(ErrorCode.SELF_RECOMMEND_NOT_ALLOWED);
         }
         User user = userRepository.findByIdOrElseThrow(userId);
 
         //중복데이터 체크
         recommendArticleRepository.findByArticleIdAndUserId(articleId, userId).ifPresent(entity -> {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 추천한 게시글입니다");
+            throw new ApplicationException(ErrorCode.ALREADY_RECOMMENDED);
         });
 
         RecommendArticle recommendArticle = RecommendArticle.builder()
@@ -126,7 +121,7 @@ public class ArticleService {
         Article article = articleRepository.findByIdOrElseThrow(articleId);
         Long deleted = recommendArticleRepository.deleteRecommendArticleByArticleIdAndUserId(articleId, userId);
         if (deleted == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "추천한 기록이 없습니다.");
+            throw new ApplicationException(ErrorCode.RECOMMENDATION_NOT_FOUND);
         }
         article.decrementRecommendCount();
     }

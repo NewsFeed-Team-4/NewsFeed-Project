@@ -1,6 +1,8 @@
 package com.example.newsfeedproject.article.repository;
 
 import com.example.newsfeedproject.article.entity.Article;
+import com.example.newsfeedproject.common.exception.ApplicationException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +15,7 @@ import java.util.Optional;
 
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     default Article findByIdOrElseThrow(Long id) {
-        return findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+        return findById(id).orElseThrow(() -> new ApplicationException(ErrorCode.ARTICLE_NOT_FOUND));
     }
 
     List<Article> findAllByEmailOrderByCreatedAtDesc(String email);

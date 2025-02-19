@@ -36,12 +36,6 @@ public class Article extends BaseEntity {
     @Column(nullable = false)
     private Long recommendCount = 0L;
 
-    public Article(String title, String content, String userName) {
-        this.title = title;
-        this.content = content;
-        this.userName = userName;
-    }
-
     public void update(String title, String content) {
         this.title = title;
         this.content = content;

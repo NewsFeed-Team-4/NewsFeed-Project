@@ -107,10 +107,14 @@ public class FriendService {
         // user_friend 테이블에 양방향 저장
         if (!existsUserToFriend) {
             userFriendRepository.save(new UserFriend(friendRequest.getUser(), friendRequest.getFriend()));
+            // 사용자의 친구 수 증가
+            friendRequest.getUser().incrementFriendCount();
         }
 
         if (!existsFriendToUser) {
             userFriendRepository.save(new UserFriend(friendRequest.getFriend(), friendRequest.getUser()));
+            // 친구의 친구 수 증가
+            friendRequest.getFriend().incrementFriendCount();
         }
 
         return new FriendResponseDto(
@@ -167,5 +171,9 @@ public class FriendService {
         // 친구 관계 삭제 (양방향)
         userFriendRepository.deleteByUserIdAndFriendId(userId, friendId);
         userFriendRepository.deleteByUserIdAndFriendId(friendId, userId);
+
+        // 사용자와 친구의 친구 수 감소
+        friendRequest.getUser().decrementFriendCount();
+        friendRequest.getFriend().decrementFriendCount();
     }
 }
