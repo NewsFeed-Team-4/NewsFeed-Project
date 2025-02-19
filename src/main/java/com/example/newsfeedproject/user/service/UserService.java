@@ -49,7 +49,7 @@ public class UserService {
         userRepository.save(newUser);
 
         // 저장된 entity -> dto 변환 및 반환
-        return new CreateUserResponseDto(userRepository.findByEmailOrElseThrow(email));
+        return CreateUserResponseDto.of(newUser.getEmail(), newUser.getPassword());
     }
 
     @Transactional
@@ -83,7 +83,14 @@ public class UserService {
     public GetUserResponseDto findUserById(Long id) {
         User savedUser = userRepository.findByIdOrElseThrow(id);
 
-        return new GetUserResponseDto(savedUser);
+        return GetUserResponseDto.builder()
+                .username(savedUser.getUsername())
+                .description(savedUser.getDescription())
+                .imageUrl(savedUser.getImageUrl())
+                .articleList(GetUserResponseDto.UserArticle.ofList(savedUser.getArticles()))
+                .articleCount(savedUser.getArticles().size())
+                .friendsCount(null) // 튜터님 상담 후 결정
+                .build();
     }
 
     public void updateUserInfo(String email, String username, String password, String description, String imageUrl) {
