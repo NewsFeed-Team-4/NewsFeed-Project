@@ -4,10 +4,9 @@ import com.example.newsfeedproject.common.entity.BaseEntity;
 import com.example.newsfeedproject.common.enums.FriendRequestType;
 import com.example.newsfeedproject.user.entity.User;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FriendRequest extends BaseEntity {
@@ -23,6 +22,7 @@ public class FriendRequest extends BaseEntity {
     @JoinColumn(name = "to_user_id")
     private User friend;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private FriendRequestType status;
 
