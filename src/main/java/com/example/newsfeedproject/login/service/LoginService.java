@@ -20,6 +20,6 @@ public class LoginService {
 
         User verified = userService.verifyUserOrElseThrow(email, password);
 
-        return jwtProvider.generateToken(Payload.of(verified.getEmail(), verified.getUsername(), new Date()));
+        return jwtProvider.generateToken(Payload.of(verified.getId(), verified.getEmail(), verified.getUsername(), new Date()));
     }
 }
