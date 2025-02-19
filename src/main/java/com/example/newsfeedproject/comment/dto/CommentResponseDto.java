@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentResponseDto {
     private Long id; // 댓글 ID
-    private Long parentId; // 부모 댓글 ID (대댓글인 경우)
+    private Long parentId; // 작성자 댓글 ID (대댓글인 경우)
     private Long userId; // 작성자 ID
     private String userName; // 작성자 이름
     private String content; // 댓글 내용
