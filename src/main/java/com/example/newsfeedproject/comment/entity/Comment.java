@@ -8,7 +8,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -16,6 +18,10 @@ public class Comment extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    //요청 추가부분
+    @Column(nullable = false, unique = true)
+    private String username; // 작성자 이름
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
@@ -42,4 +48,5 @@ public class Comment extends BaseEntity {
         this.userName = userName;
         this.content = content;
     }
+
 }

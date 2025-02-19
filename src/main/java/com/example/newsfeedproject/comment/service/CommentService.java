@@ -50,7 +50,7 @@ public class CommentService {
     public List<CommentResponseDto> getCommentsByArticle(Long articleId) {
         List<Comment> comments = commentRepository.findByArticleId(articleId);
         return comments.stream()
-                .map(CommentResponseDto::new)
+                .map(CommentResponseDto::new) // Comment -> CommentResponseDto 변환
                 .collect(Collectors.toList());
     }
 
