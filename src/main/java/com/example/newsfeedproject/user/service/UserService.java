@@ -49,7 +49,7 @@ public class UserService {
         userRepository.save(newUser);
 
         // 저장된 entity -> dto 변환 및 반환
-        return CreateUserResponseDto.of(newUser.getEmail(), newUser.getPassword());
+        return CreateUserResponseDto.of(newUser.getEmail(), newUser.getUsername());
     }
 
     @Transactional
