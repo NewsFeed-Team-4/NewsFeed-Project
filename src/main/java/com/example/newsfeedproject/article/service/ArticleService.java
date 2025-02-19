@@ -101,11 +101,11 @@ public class ArticleService {
     @Transactional
     public void addRecommendArticle(Long articleId, Long userId) {
         //좋아요한 게시글과 사용자가 존재하는지 검증
-        Article article = articleRepository.findById(articleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+        Article article = articleRepository.findByIdOrElseThrow(articleId);
         if(article.getUser().getId().equals(userId)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인이 작성한 게시물에는 좋아요를 남길 수 없습니다.");
         }
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "사용자를 찾을 수 없습니다."));
+        User user = userRepository.findByIdOrElseThrow(userId);
 
         //중복데이터 체크
         recommendArticleRepository.findByArticleIdAndUserId(articleId, userId).ifPresent(entity -> {
@@ -123,7 +123,7 @@ public class ArticleService {
 
     @Transactional
     public void cancelRecommendArticle(Long articleId, Long userId) {
-        Article article = articleRepository.findById(articleId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다."));
+        Article article = articleRepository.findByIdOrElseThrow(articleId);
         Long deleted = recommendArticleRepository.deleteRecommendArticleByArticleIdAndUserId(articleId, userId);
         if (deleted == 0) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "추천한 기록이 없습니다.");
