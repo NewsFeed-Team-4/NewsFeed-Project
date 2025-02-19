@@ -37,6 +37,9 @@ public class User extends BaseEntity {
     @Column
     private String imageUrl;
 
+    @Column(nullable = false)
+    private Long friendCount = 0L;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Article> articles = new ArrayList<>();
 
@@ -60,5 +63,13 @@ public class User extends BaseEntity {
             throw new ApplicationException(ErrorCode.PASSWORD_SAME_AS_OLD);
         }
         this.password = newPassword;
+    }
+
+    public void incrementFriendCount() {
+        this.friendCount++;
+    }
+
+    public void decrementFriendCount() {
+        this.friendCount--;
     }
 }
