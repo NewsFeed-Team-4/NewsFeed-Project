@@ -39,7 +39,7 @@ public class UserAuthArgumentResolver implements HandlerMethodArgumentResolver {
         Payload payload = jwtProvider.parseToken(token);
 
         return UserAuthDto.builder()
-                .userId(null)//추가예정
+                .userId(payload.getId())
                 .userName(payload.getUsername())
                 .email(payload.getEmail())
                 .build();
