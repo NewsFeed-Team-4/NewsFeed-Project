@@ -1,5 +1,7 @@
 package com.example.newsfeedproject.user.service;
 
+import com.example.newsfeedproject.common.exception.ApplicationException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.user.dto.response.CreateUserResponseDto;
 import com.example.newsfeedproject.user.dto.response.UserListResponse;
 import com.example.newsfeedproject.user.dto.response.GetUserResponseDto;
@@ -11,10 +13,8 @@ import com.example.newsfeedproject.user.repository.spec.UserSpecification;
 import com.example.newsfeedproject.util.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +28,12 @@ public class UserService {
 
         // email 중복 확인
         if (userRepository.findByEmail(email).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 존재하는 사용자 입니다.");
+            throw new ApplicationException(ErrorCode.USER_ALREADY_EXIST);
         }
 
         // 삭제된 사용자인지 확인
         if (deletedUserRepository.findByEmail(email).isPresent()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "이미 탈퇴한 사용자 입니다.");
+            throw new ApplicationException(ErrorCode.ALREADY_DEACTIVATED_USER);
         }
 
         // 중복 X -> 비밀번호 encrypt 및 user entity 생성
