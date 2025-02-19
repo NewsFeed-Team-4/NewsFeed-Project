@@ -13,7 +13,14 @@ public class UserListResponse {
 
     public static UserListResponse from(List<User> users) {
         List<GetUserResponseDto> userList = users.stream()
-                .map(GetUserResponseDto::new)
+                .map(user -> GetUserResponseDto.builder()
+                        .username(user.getUsername())
+                        .description(user.getDescription())
+                        .imageUrl(user.getImageUrl())
+                        .articleList(GetUserResponseDto.UserArticle.ofList(user.getArticles()))
+                        .articleCount(user.getArticles().size())
+                        .friendsCount(null)//구현필요
+                        .build())
                 .toList();
         return new UserListResponse(userList);
     }
