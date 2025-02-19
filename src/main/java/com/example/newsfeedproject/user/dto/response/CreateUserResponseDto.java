@@ -1,6 +1,5 @@
 package com.example.newsfeedproject.user.dto.response;
 
-import com.example.newsfeedproject.user.entity.User;
 import lombok.Getter;
 
 @Getter
@@ -8,8 +7,12 @@ public class CreateUserResponseDto {
     private final String email;
     private final String username;
 
-    public CreateUserResponseDto(User savedUser) {
-        this.email = savedUser.getEmail();
-        this.username = savedUser.getUsername();
+    private CreateUserResponseDto(String email, String username) {
+        this.email = email;
+        this.username = username;
+    }
+
+    public static CreateUserResponseDto of(String email, String username) {
+        return new CreateUserResponseDto(email, username);
     }
 }
