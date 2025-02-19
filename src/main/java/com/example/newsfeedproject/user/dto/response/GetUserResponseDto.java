@@ -1,12 +1,15 @@
 package com.example.newsfeedproject.user.dto.response;
 
 import com.example.newsfeedproject.article.entity.Article;
-import com.example.newsfeedproject.user.entity.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class GetUserResponseDto {
     private final String username;
     private final String description;
@@ -15,17 +18,8 @@ public class GetUserResponseDto {
     private final Integer friendsCount;
     private final List<UserArticle> articleList;
 
-    public GetUserResponseDto(User user) {
-        this.username = user.getUsername();
-        this.description = user.getDescription();
-        this.imageUrl = user.getImageUrl();
-        this.articleCount = user.getArticles().size();
-        this.friendsCount = user.getUserFriends().size();
-        this.articleList = UserArticle.ofList(user.getArticles());
-    }
-
     @Getter
-    private static class UserArticle {
+    public static class UserArticle {
         private final Long id;
         private final String imageUrl;
 
@@ -38,7 +32,7 @@ public class GetUserResponseDto {
             return new UserArticle(article.getId(), article.getImage());
         }
 
-        private static List<UserArticle> ofList(List<Article> articleList) {
+        public static List<UserArticle> ofList(List<Article> articleList) {
             return articleList.stream()
                     .map(UserArticle::of)
                     .toList();

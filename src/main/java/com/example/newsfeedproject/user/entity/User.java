@@ -38,9 +38,6 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     List<Article> articles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    List<UserFriend> userFriends = new ArrayList<>();
-
     @Builder
     public User(String username, String email, String password, String description, String imageUrl) {
         this.username = username;
