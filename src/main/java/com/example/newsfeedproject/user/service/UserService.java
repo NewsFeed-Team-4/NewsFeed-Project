@@ -103,7 +103,7 @@ public class UserService {
     public void updateUserPassword(String email, String oldPassword, String newPassword) {
         User verified = verifyUserOrElseThrow(email, oldPassword);
 
-        verified.updateUserPassword(newPassword);
+        verified.updateUserPassword(passwordEncoder.encode(newPassword));
         userRepository.save(verified);
     }
 }

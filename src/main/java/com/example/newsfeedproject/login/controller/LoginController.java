@@ -3,6 +3,7 @@ package com.example.newsfeedproject.login.controller;
 import com.example.newsfeedproject.login.service.LoginService;
 import com.example.newsfeedproject.user.dto.request.GetUserRequestDto;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<Void> login(
             HttpServletResponse response,
-            @RequestBody GetUserRequestDto dto
+            @Valid @RequestBody GetUserRequestDto dto
     ) {
         String jwt = loginService.verifyUser(dto.getEmail(), dto.getPassword());
         response.addHeader("Authorization", "Bearer " + jwt);
