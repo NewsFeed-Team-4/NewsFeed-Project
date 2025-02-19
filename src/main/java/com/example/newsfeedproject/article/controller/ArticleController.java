@@ -5,6 +5,7 @@ import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.service.ArticleService;
 import com.example.newsfeedproject.common.annotations.UserAuth;
 import com.example.newsfeedproject.common.annotations.UserAuthDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -24,7 +25,7 @@ public class ArticleController {
 
     // 새로운 게시글을 생성
     @PostMapping
-    public ResponseEntity<ArticleResponseDto> save(@RequestBody CreateArticleRequestDto requestDto, @UserAuth UserAuthDto userAuthDto) {
+    public ResponseEntity<ArticleResponseDto> save(@Valid @RequestBody CreateArticleRequestDto requestDto, @UserAuth UserAuthDto userAuthDto) {
 
         ArticleResponseDto articleResponseDto = articleService.save(requestDto.getTitle(), requestDto.getContent(), userAuthDto);
 
@@ -43,7 +44,7 @@ public class ArticleController {
 
     // 특정 게시글을 수정
     @PatchMapping("/{id}")
-    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @UserAuth UserAuthDto userAuthDto, @RequestBody CreateArticleRequestDto requestDto) {
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id, @UserAuth UserAuthDto userAuthDto, @Valid @RequestBody CreateArticleRequestDto requestDto) {
         ArticleResponseDto updatedArticle = articleService.update(id, userAuthDto.getEmail(), requestDto);
 
         return new ResponseEntity<>(updatedArticle, HttpStatus.OK);
