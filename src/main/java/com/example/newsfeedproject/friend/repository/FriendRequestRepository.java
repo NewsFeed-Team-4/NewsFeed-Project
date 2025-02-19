@@ -15,7 +15,14 @@ import java.util.Optional;
 public interface FriendRequestRepository extends JpaRepository<FriendRequest, Long> {
     List<FriendRequest> findAllByStatusAndUser_Id(FriendRequestType status, Long userId);
     List<FriendRequest> findAllByStatusAndFriend_Id(FriendRequestType friendRequestType, Long id);
-    boolean existsByUserAndFriendAndStatus(User fromUser, User toUser, FriendRequestType friendRequestType);
+//    boolean existsByUserAndFriendAndStatus(User fromUser, User toUser, FriendRequestType friendRequestType);
+
+    @Query("SELECT COUNT(fr) > 0 FROM FriendRequest fr " +
+            "WHERE (fr.user.id = :userId AND fr.friend.id = :friendId AND fr.status = :status) " +
+            "OR (fr.user.id = :friendId AND fr.friend.id = :userId AND fr.status = :status)")
+    boolean existsByUserAndFriendAndStatus(@Param("userId") Long userId,
+                                           @Param("friendId") Long friendId,
+                                           @Param("status") FriendRequestType status);
 
     // user id 와 friend id 가 반대일 경우도 있어 함께 조회 할 수 있게 만들었습니다.
     @Query("SELECT fr FROM FriendRequest fr WHERE (fr.user.id = :userId AND fr.friend.id = :friendId AND fr.status = :status) " +

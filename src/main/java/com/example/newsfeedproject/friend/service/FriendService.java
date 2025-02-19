@@ -27,12 +27,11 @@ public class FriendService {
     private final FriendRequestRepository friendRequestRepository;
     private final UserFriendRepository userFriendRepository;
 
-    public FriendResponseDto save(Long userId, String friendEmail) {
+    public FriendResponseDto save(Long userId, Long friendId) {
 
-        User fromUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User fromUser = userRepository.findByIdOrElseThrow(userId);
 
-        User toUser = userRepository.findByEmailOrElseThrow(friendEmail);
+        User toUser = userRepository.findByIdOrElseThrow(friendId);
 
         // 자기 자신에게 친구 요청을 보내는 경우 방지
         if (fromUser.getId().equals(toUser.getId())) {
@@ -60,14 +59,12 @@ public class FriendService {
 
     // 특정 상태의 친구 요청이 존재하는지 확인하는 메서드
     private boolean friendRequestExists(User user1, User user2, FriendRequestType status) {
-        return friendRequestRepository.existsByUserAndFriendAndStatus(user1, user2, status) ||
-                friendRequestRepository.existsByUserAndFriendAndStatus(user2, user1, status);
+        return friendRequestRepository.existsByUserAndFriendAndStatus(user1.getId(), user2.getId(), status);
     }
 
     public List<FriendResponseDto> requestFriends(long userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        User user = userRepository.findByIdOrElseThrow(userId);
 
         // 1. 내가 보낸 요청 가져오기
         List<FriendRequest> sentRequests = friendRequestRepository.findAllByStatusAndUser_Id(FriendRequestType.WAITING, user.getId());
@@ -110,12 +107,10 @@ public class FriendService {
         // user_friend 테이블에 양방향 저장
         if (!existsUserToFriend) {
             userFriendRepository.save(new UserFriend(friendRequest.getUser(), friendRequest.getFriend()));
-            userFriendRepository.flush(); // 데이터를 즉시 DB에 반영 하기 위해 사용
         }
 
         if (!existsFriendToUser) {
             userFriendRepository.save(new UserFriend(friendRequest.getFriend(), friendRequest.getUser()));
-            userFriendRepository.flush(); // 데이터를 즉시 DB에 반영 하기 위해 사용
         }
 
         return new FriendResponseDto(
