@@ -20,8 +20,8 @@ public class Comment extends BaseEntity {
     private Long id;
 
     //요청 추가부분
-//    @Column(nullable = false, unique = true)
-//    private String username; // 작성자 이름
+    @Column(nullable = false, unique = true)
+    private String username; // 작성자 이름
 
     @ManyToOne
     @JoinColumn(name = "parent_id")

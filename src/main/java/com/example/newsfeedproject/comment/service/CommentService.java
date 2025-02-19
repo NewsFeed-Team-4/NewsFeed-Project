@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+
 public class CommentService {
 
     private final CommentRepository commentRepository;
@@ -28,12 +29,12 @@ public class CommentService {
 
     // 댓글 생성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto) {
+    public CommentResponseDto createComment(Long articleId, CommentRequestDto requestDto, Long userId) {
         // 사용자 없음 예외처리
-        User user = userRepository.findById(requestDto.getParentId())
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         //  게시글 없음 예외 처리
-        Article article = articleRepository.findById(requestDto.getArticleId())
+        Article article = articleRepository.findById(articleId)
                 .orElseThrow(() -> new IllegalArgumentException("Article not found"));
         //  메인  댓글  없음 예외처리
         Comment parent = requestDto.getParentId() != null ?
@@ -60,16 +61,12 @@ public class CommentService {
                 .collect(Collectors.toList());
     }
 
+
     // 댓글 수정
     @Transactional
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, Long userId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new ApplicationException(ErrorCode.COMMENT_NOT_FOUND)); // 댓글 없음 예외
-
-        // 댓글 작성자와 수정 요청자가 같은지 확인
-        if (!comment.getUser().getId().equals(userId)) {
-            throw new UnauthorizedUserException(); // 권한 없음 예외
-        }
+        Comment comment = getCommentById(commentId); // 중복 제거된 메서드 사용
+        validatePermission(comment, userId); // 권한 체크 메서드 사용
 
         comment.updateContent(requestDto.getContent());
         return new CommentResponseDto(comment);
@@ -77,10 +74,29 @@ public class CommentService {
 
     // 댓글 삭제
     @Transactional
-    public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+    public void deleteComment(Long commentId, Long userId) {
+        Comment comment = getCommentById(commentId); // 중복 제거된 메서드 사용
+        validatePermission(comment, userId); // 권한 체크 메서드 사용
+
         commentRepository.delete(comment);
     }
+
+    // 중복 제거: 댓글 조회 메서드
+    private Comment getCommentById(Long commentId) {
+        return commentRepository.findById(commentId)
+                .orElseThrow(() -> new ApplicationException(ErrorCode.COMMENT_NOT_FOUND));
+    }
+
+    // 중복 제거: 댓글 수정/삭제 권한 체크 메서드
+    private void validatePermission(Comment comment, Long userId) {
+        User articleOwner = comment.getArticle().getUser(); // 게시글 작성자
+
+        if (!comment.getUser().getId().equals(userId) && !articleOwner.getId().equals(userId)) {
+            throw new UnauthorizedUserException(); // 권한 없음 예외
+        }
+    }
+
 }
+
+
 

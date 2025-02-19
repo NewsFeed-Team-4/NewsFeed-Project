@@ -13,7 +13,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class LoginFilter implements Filter {
 
-    private static final String[] WHITE_LIST = {"/", "/user/signup", "/login", "/logout"};
+    private static final String[] WHITE_LIST = {"/", "/users/signup", "/login", "/logout"};
     private final JwtProvider jwtProvider;
 
     @Override

@@ -19,7 +19,7 @@ public class UserListResponse {
                         .imageUrl(user.getImageUrl())
                         .articleList(GetUserResponseDto.UserArticle.ofList(user.getArticles()))
                         .articleCount(user.getArticles().size())
-                        .friendsCount(null)//구현필요
+                        .friendCount(user.getFriendCount())
                         .build())
                 .toList();
         return new UserListResponse(userList);

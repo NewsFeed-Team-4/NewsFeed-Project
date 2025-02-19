@@ -15,7 +15,7 @@ public class GetUserResponseDto {
     private final String description;
     private final String imageUrl;
     private final Integer articleCount;
-    private final Integer friendsCount;
+    private final Long friendCount;
     private final List<UserArticle> articleList;
 
     @Getter
