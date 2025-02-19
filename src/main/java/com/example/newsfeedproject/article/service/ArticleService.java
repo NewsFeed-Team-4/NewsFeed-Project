@@ -6,6 +6,8 @@ import com.example.newsfeedproject.article.dto.CreateArticleRequestDto;
 import com.example.newsfeedproject.article.entity.Article;
 import com.example.newsfeedproject.article.repository.ArticleRepository;
 import com.example.newsfeedproject.common.annotations.UserAuthDto;
+import com.example.newsfeedproject.common.exception.ApplicationException;
+import com.example.newsfeedproject.common.exception.ErrorCode;
 import com.example.newsfeedproject.recommand.entity.RecommendArticle;
 import com.example.newsfeedproject.recommand.repository.RecommendArticleRepository;
 import com.example.newsfeedproject.user.entity.User;
@@ -13,10 +15,8 @@ import com.example.newsfeedproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +55,7 @@ public class ArticleService {
     // 권한 검증 메서드
     private void validateArticleAuthor (Article article, String email) {
         if (!article.getEmail().equals(email)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "해당 게시글의 수정 권한이 없습니다.");
+            throw new ApplicationException(ErrorCode.UNAUTHORIZED_ARTICLE_MODIFICATION);
         }
 
     }
@@ -98,13 +98,13 @@ public class ArticleService {
         //좋아요한 게시글과 사용자가 존재하는지 검증
         Article article = articleRepository.findByIdOrElseThrow(articleId);
         if(article.getUser().getId().equals(userId)){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "본인이 작성한 게시물에는 좋아요를 남길 수 없습니다.");
+            throw new ApplicationException(ErrorCode.SELF_RECOMMEND_NOT_ALLOWED);
         }
         User user = userRepository.findByIdOrElseThrow(userId);
 
         //중복데이터 체크
         recommendArticleRepository.findByArticleIdAndUserId(articleId, userId).ifPresent(entity -> {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 추천한 게시글입니다");
+            throw new ApplicationException(ErrorCode.ALREADY_RECOMMENDED);
         });
 
         RecommendArticle recommendArticle = RecommendArticle.builder()
@@ -121,7 +121,7 @@ public class ArticleService {
         Article article = articleRepository.findByIdOrElseThrow(articleId);
         Long deleted = recommendArticleRepository.deleteRecommendArticleByArticleIdAndUserId(articleId, userId);
         if (deleted == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "추천한 기록이 없습니다.");
+            throw new ApplicationException(ErrorCode.RECOMMENDATION_NOT_FOUND);
         }
         article.decrementRecommendCount();
     }
