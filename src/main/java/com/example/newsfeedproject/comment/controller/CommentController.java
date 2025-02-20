@@ -14,18 +14,15 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comments")
+@RequestMapping("/comments")
 public class CommentController {
 
     private final CommentService commentService;
 
     // 댓글 생성
-    @PostMapping("/{articleId}")
-    public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto requestDto,
-                                                            @PathVariable Long articleId,
-                                                            @UserAuth UserAuthDto UserAuthDto) {
-        CommentResponseDto responseDto = commentService.createComment(articleId, requestDto, UserAuthDto.getUserId());
-
+    @PostMapping
+    public ResponseEntity<CommentResponseDto> createComment(@RequestBody CommentRequestDto requestDto) {
+        CommentResponseDto responseDto = commentService.createComment(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
@@ -36,6 +33,7 @@ public class CommentController {
         return ResponseEntity.ok(responseDtos);
     }
 
+    // 댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
             @PathVariable Long commentId,
