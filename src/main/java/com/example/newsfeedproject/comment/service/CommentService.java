@@ -63,7 +63,7 @@ public class CommentService {
 
 
     // 댓글 수정
-    @Transactional
+
     public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto, Long userId) {
         Comment comment = getCommentById(commentId); // 중복 제거된 메서드 사용
         validatePermission(comment, userId); // 권한 체크 메서드 사용
